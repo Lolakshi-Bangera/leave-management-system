@@ -1,0 +1,3 @@
+import mongoose from "mongoose";
+const schema=new mongoose.Schema({employee:{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true},leaveType:{type:String,enum:["casual","sick","earned"],required:true},startDate:{type:Date,required:true},endDate:{type:Date,required:true},days:{type:Number,required:true,min:1},reason:{type:String,required:true,trim:true,maxlength:500},status:{type:String,enum:["pending","approved","rejected"],default:"pending"},rejectionReason:{type:String,default:""},reviewedBy:{type:mongoose.Schema.Types.ObjectId,ref:"User",default:null},reviewedOn:{type:Date,default:null}},{timestamps:true});
+export default mongoose.model("Leave",schema);

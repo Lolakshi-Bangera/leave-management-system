@@ -1,0 +1,20 @@
+import "dotenv/config";
+import express from "express";
+import cors from "cors";
+import mongoose from "mongoose";
+import authRoutes from "./routes/authRoutes.js";
+import leaveRoutes from "./routes/leaveRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+
+const app=express();
+app.use(cors({origin:process.env.CLIENT_URL||"http://localhost:5173",credentials:true}));
+app.use(express.json());
+app.get("/api/health",(req,res)=>res.json({success:true,message:"Leave Management API is running"}));
+app.use("/api/auth",authRoutes);
+app.use("/api/leaves",leaveRoutes);
+app.use("/api/admin",adminRoutes);
+app.use("/api/users",userRoutes);
+app.use((err,req,res,next)=>{console.error(err);res.status(err.status||500).json({success:false,message:err.message||"Internal server error"});});
+const PORT=process.env.PORT||5000;
+mongoose.connect(process.env.MONGODB_URI).then(()=>{console.log("MongoDB connected");app.listen(PORT,()=>console.log(`API running on http://localhost:${PORT}`));}).catch(e=>{console.error("MongoDB connection failed:",e.message);process.exit(1);});
