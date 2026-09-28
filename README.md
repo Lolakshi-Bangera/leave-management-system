@@ -356,6 +356,48 @@ CLIENT_URL=https://leave-management-system-nine-black.vercel.app
 
 ### Security
 
+## Password Management & Reset
+
+The application follows secure password-handling practices:
+
+- User passwords are never stored in plain text.
+- Passwords are hashed using `bcryptjs` before being stored in MongoDB.
+- JWT-based authentication is used for authenticated API requests.
+- Passwords are excluded from user-facing API responses wherever applicable.
+- Authentication tokens are stored on the client and attached to protected API requests.
+- Unauthorized requests are rejected by the backend authentication middleware.
+- Password reset functionality should use a secure, time-limited reset token rather than accepting a new password directly through an unauthenticated request.
+- Reset tokens should be single-use, expire after a short period, and be stored securely (preferably as a hash) in the database.
+- After a successful password reset, existing authentication tokens/sessions should be invalidated where applicable.
+- Password reset responses should not reveal whether a particular email address exists in the system.
+
+### Password Reset Flow
+
+The recommended password reset flow is:
+
+1. User selects **Forgot Password** on the login page.
+2. User enters their registered email address.
+3. Backend generates a cryptographically secure, time-limited reset token.
+4. Reset token is sent to the user's registered email through a configured email service.
+5. User opens the reset link and creates a new password.
+6. Backend validates the token and expiration time.
+7. New password is securely hashed using `bcryptjs`.
+8. Reset token is invalidated after successful password change.
+9. User can log in using the new password.
+
+### Future Enhancement
+
+A production-ready version can further improve password management by adding:
+
+- Forgot Password / Reset Password UI
+- Email-based password reset
+- Short-lived, single-use reset tokens
+- Password strength validation
+- Change Password option for authenticated users
+- Session/token invalidation after password change
+- Rate limiting for login and password reset endpoints
+- Account lockout or temporary throttling after repeated failed login attempts
+
 Never commit `.env` files to GitHub.
 
 The repository `.gitignore` should include:
